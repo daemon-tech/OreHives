@@ -7,5 +7,12 @@
   "item.orehives.iron_comb": "Eisenwabe",
   "item.orehives.copper_comb": "Kupferwabe",
   "item.orehives.gold_comb": "Goldwabe",
-  "item.orehives.diamond_comb": "Diamantwabe"
+  "item.orehives.diamond_comb": "Diamantwabe",
+  "item.orehives.emerald_comb": "Smaragdwabe",
+  "item.orehives.redstone_comb": "Redstonewabe",
+  "item.orehives.lapis_comb": "Lapiswabe",
+  "item.minecraft.potion.effect.haste": "Trank der Eile",
+  "item.minecraft.splash_potion.effect.haste": "Wurftrank der Eile",
+  "item.minecraft.lingering_potion.effect.haste": "Verweiltrank der Eile",
+  "item.minecraft.tipped_arrow.effect.haste": "Pfeil der Eile"
 }

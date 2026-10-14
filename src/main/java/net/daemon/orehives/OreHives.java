@@ -16,7 +16,11 @@ import net.minecraft.component.type.FoodComponent;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.*;
+import net.minecraft.potion.Potion;
 import net.minecraft.potion.Potions;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.sound.BlockSoundGroup;
@@ -48,6 +52,12 @@ public class OreHives implements ModInitializer {
             .food(new FoodComponent.Builder().nutrition(4).saturationModifier(0.3f).alwaysEdible()
                     .statusEffect(new StatusEffectInstance(StatusEffects.HASTE, 20 * 60), 1.0f).build()));
 
+    /** Items accepted by the centrifuge (data pack extensible). */
+    public static final TagKey<Item> ORE_COMBS_TAG = TagKey.of(RegistryKeys.ITEM, id("ore_combs"));
+
+    // Custom Haste potions (vanilla has none). Base 3:00, long 8:00, strong II 1:30.
+    public static RegistryEntry<Potion> HASTE_POTION, LONG_HASTE_POTION, STRONG_HASTE_POTION;
+
     public static boolean orePlantsLoaded;
 
     @Override
@@ -78,9 +88,24 @@ public class OreHives implements ModInitializer {
                     e.add(ORE_HONEY);
                 }).build());
 
-        // Ore honey as potion ingredient: awkward + ore honey -> strength
-        FabricBrewingRecipeRegistryBuilder.BUILD.register(b -> b.registerPotionRecipe(Potions.AWKWARD, ORE_HONEY, Potions.STRENGTH));
+        registerPotions();
 
         LOGGER.info("Ore Hives loaded (OrePlants present: {})", orePlantsLoaded);
+    }
+
+    private static void registerPotions() {
+        HASTE_POTION = potion("haste", new StatusEffectInstance(StatusEffects.HASTE, 20 * 180));
+        LONG_HASTE_POTION = potion("long_haste", new StatusEffectInstance(StatusEffects.HASTE, 20 * 480));
+        STRONG_HASTE_POTION = potion("strong_haste", new StatusEffectInstance(StatusEffects.HASTE, 20 * 90, 1));
+        FabricBrewingRecipeRegistryBuilder.BUILD.register(b -> {
+            b.registerPotionRecipe(Potions.AWKWARD, ORE_HONEY, HASTE_POTION);
+            b.registerPotionRecipe(HASTE_POTION, Items.REDSTONE, LONG_HASTE_POTION);
+            b.registerPotionRecipe(HASTE_POTION, Items.GLOWSTONE_DUST, STRONG_HASTE_POTION);
+        });
+    }
+
+    /** Base name "haste" shares the translation key item.minecraft.potion.effect.haste for all variants. */
+    private static RegistryEntry<Potion> potion(String name, StatusEffectInstance effect) {
+        return Registry.registerReference(Registries.POTION, id(name), new Potion("haste", effect));
     }
 }

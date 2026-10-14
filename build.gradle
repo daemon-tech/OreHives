@@ -8,10 +8,23 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 }
+// Dev-only gametest mod, kept out of the release jar.
+sourceSets {
+	gametest {
+		compileClasspath += main.compileClasspath + main.output
+		runtimeClasspath += main.runtimeClasspath + main.output
+	}
+}
+
 loom {
+	mods {
+		orehives { sourceSet sourceSets.main }
+		"orehives-gametest" { sourceSet sourceSets.gametest }
+	}
 	runs {
 		gametest {
 			server()
+			source sourceSets.gametest
 			name "Game Test"
 			vmArg "-Dfabric-api.gametest"
 			vmArg "-Dfabric-api.gametest.report-file=${layout.buildDirectory.get().asFile}/junit.xml"

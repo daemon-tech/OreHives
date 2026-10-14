@@ -7,5 +7,12 @@
   "item.orehives.iron_comb": "Iron Comb",
   "item.orehives.copper_comb": "Copper Comb",
   "item.orehives.gold_comb": "Gold Comb",
-  "item.orehives.diamond_comb": "Diamond Comb"
+  "item.orehives.diamond_comb": "Diamond Comb",
+  "item.orehives.emerald_comb": "Emerald Comb",
+  "item.orehives.redstone_comb": "Redstone Comb",
+  "item.orehives.lapis_comb": "Lapis Comb",
+  "item.minecraft.potion.effect.haste": "Potion of Haste",
+  "item.minecraft.splash_potion.effect.haste": "Splash Potion of Haste",
+  "item.minecraft.lingering_potion.effect.haste": "Lingering Potion of Haste",
+  "item.minecraft.tipped_arrow.effect.haste": "Arrow of Haste"
 }

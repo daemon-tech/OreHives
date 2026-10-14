@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "orehives-gametest",
+  "version": "1.0.0",
+  "name": "Ore Hives GameTests",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-gametest": [
+      "net.daemon.orehives.test.OreHivesGameTest"
+    ]
+  },
+  "depends": {
+    "orehives": "*"
+  }
+}

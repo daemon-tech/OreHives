@@ -2,7 +2,8 @@
 import json, os, random
 from PIL import Image
 R = "src/main/resources"; NS = "orehives"
-ORES = {"iron": (216,175,147), "copper": (224,115,77), "gold": (250,215,60), "diamond": (90,230,220)}
+ORES = {"iron": (216,175,147), "copper": (224,115,77), "gold": (250,215,60), "diamond": (90,230,220),
+        "emerald": (40,200,90), "redstone": (220,30,30), "lapis": (40,80,200)}
 def w(path, obj):
     p = os.path.join(R, path); os.makedirs(os.path.dirname(p), exist_ok=True)
     open(p, "w").write(json.dumps(obj, indent=2) + "\n")
@@ -85,10 +86,16 @@ lang = {"block.orehives.ore_beehive":"Ore Beehive","block.orehives.centrifuge":"
         "item.orehives.ore_honey_bottle":"Ore Honey Bottle","itemGroup.orehives.main":"Ore Hives",
         "message.orehives.hive_status":"Combs: %s %s"}
 for o in ORES: lang[f"item.orehives.{o}_comb"] = f"{o.capitalize()} Comb"
+for pre,en in (("potion","Potion"),("splash_potion","Splash Potion"),("lingering_potion","Lingering Potion")):
+    lang[f"item.minecraft.{pre}.effect.haste"] = f"{en} of Haste"
+lang["item.minecraft.tipped_arrow.effect.haste"] = "Arrow of Haste"
 w(f"{A}/lang/en_us.json", lang)
 de = dict(lang); de.update({"block.orehives.ore_beehive":"Erz-Bienenstock","block.orehives.centrifuge":"Honigschleuder",
         "item.orehives.ore_honey_bottle":"Erzhonigflasche","message.orehives.hive_status":"Waben: %s %s"})
-for o,n in {"iron":"Eisen","copper":"Kupfer","gold":"Gold","diamond":"Diamant"}.items(): de[f"item.orehives.{o}_comb"]=f"{n}wabe"
+for o,n in {"iron":"Eisen","copper":"Kupfer","gold":"Gold","diamond":"Diamant","emerald":"Smaragd","redstone":"Redstone","lapis":"Lapis"}.items(): de[f"item.orehives.{o}_comb"]=f"{n}wabe"
+for pre,dn in (("potion","Trank"),("splash_potion","Wurftrank"),("lingering_potion","Verweiltrank")):
+    de[f"item.minecraft.{pre}.effect.haste"] = f"{dn} der Eile"
+de["item.minecraft.tipped_arrow.effect.haste"] = "Pfeil der Eile"
 w(f"{A}/lang/de_de.json", de)
 
 # data: tags (OrePlants entries optional -> soft dependency)
@@ -107,7 +114,9 @@ def entry(item, lo, hi, chance=None):
     if chance: pool["conditions"]=[{"condition":"minecraft:random_chance","chance":chance}]
     return pool
 outs = {"iron":[entry("minecraft:iron_nugget",2,4)], "gold":[entry("minecraft:gold_nugget",2,4)],
-        "copper":[entry("minecraft:raw_copper",1,1,0.5)], "diamond":[entry("minecraft:diamond",1,1,0.15)]}
+        "copper":[entry("minecraft:raw_copper",1,1,0.5)], "diamond":[entry("minecraft:diamond",1,1,0.05)],
+        "emerald":[entry("minecraft:emerald",1,1,0.08)], "redstone":[entry("minecraft:redstone",2,4)],
+        "lapis":[entry("minecraft:lapis_lazuli",2,4)]}
 for o,pools in outs.items():
     pools = pools + [entry("minecraft:honeycomb",1,1,0.3), entry(f"{NS}:ore_honey_bottle",1,1,0.05)]
     w(f"{D}/loot_table/centrifuge/{o}_comb.json", {"type":"minecraft:chest","pools":pools})
@@ -121,8 +130,14 @@ w(f"{D}/recipe/centrifuge.json", {"type":"minecraft:crafting_shaped","category":
    "key":{"I":{"item":"minecraft:iron_ingot"},"H":{"item":"minecraft:honeycomb"},"S":{"item":"minecraft:smooth_stone"}},"result":{"id":f"{NS}:centrifuge","count":1}})
 w("fabric.mod.json", {"schemaVersion":1,"id":NS,"version":"${version}","name":"Ore Hives",
    "description":"Bees pollinating ore flowers (OrePlants crops or flowers on ore) fill Ore Beehives with ore combs; spin them in a Honey Centrifuge.",
-   "authors":["0xDaemon"],"license":"TBD","icon":f"assets/{NS}/icon.png","environment":"*",
-   "entrypoints":{"main":["net.daemon.orehives.OreHives"],"fabric-gametest":["net.daemon.orehives.test.OreHivesGameTest"]},
+   "authors":["Sam (daemon-tech)"],"contact":{"sources":"https://github.com/daemon-tech"},"license":"MIT","icon":f"assets/{NS}/icon.png","environment":"*",
+   "entrypoints":{"main":["net.daemon.orehives.OreHives"]},
    "depends":{"fabricloader":">=0.16.0","minecraft":"~1.21.1","java":">=21","fabric-api":"*"},
    "suggests":{"oreplant":"*"}})
 print("ok")
+
+# separate dev-only gametest mod (not in release jar)
+os.makedirs("src/gametest/resources", exist_ok=True)
+open("src/gametest/resources/fabric.mod.json","w").write(json.dumps({"schemaVersion":1,"id":"orehives-gametest","version":"1.0.0",
+  "name":"Ore Hives GameTests","environment":"*","entrypoints":{"fabric-gametest":["net.daemon.orehives.test.OreHivesGameTest"]},
+  "depends":{"orehives":"*"}}, indent=2)+"\n")

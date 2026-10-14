@@ -5,17 +5,17 @@
   "name": "Ore Hives",
   "description": "Bees pollinating ore flowers (OrePlants crops or flowers on ore) fill Ore Beehives with ore combs; spin them in a Honey Centrifuge.",
   "authors": [
-    "0xDaemon"
+    "Sam (daemon-tech)"
   ],
-  "license": "TBD",
+  "contact": {
+    "sources": "https://github.com/daemon-tech"
+  },
+  "license": "MIT",
   "icon": "assets/orehives/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
       "net.daemon.orehives.OreHives"
-    ],
-    "fabric-gametest": [
-      "net.daemon.orehives.test.OreHivesGameTest"
     ]
   },
   "depends": {

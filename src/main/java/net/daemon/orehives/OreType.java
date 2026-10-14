@@ -7,9 +7,13 @@ import net.minecraft.util.Identifier;
 
 /** Ore types a hive can produce. Flower->ore mapping is fully tag driven. */
 public enum OreType {
-    IRON, COPPER, GOLD, DIAMOND;
+    IRON(false), COPPER(false), GOLD(false), DIAMOND(true), EMERALD(true), REDSTONE(false), LAPIS(false);
 
     public final String id = name().toLowerCase();
+    /** Precious ores get a reduced comb chance (config: preciousChanceMultiplier). */
+    public final boolean precious;
+
+    OreType(boolean precious) { this.precious = precious; }
     /** Flowers that directly count as this ore (e.g. oreplant:iron_crop_block). */
     public final TagKey<Block> flowerTag = TagKey.of(RegistryKeys.BLOCK, OreHives.id("ore_flowers/" + id));
     /** Ore blocks that "infuse" a generic ore flower standing on/next to them. */

@@ -50,7 +50,7 @@ public class OreBeehiveBlockEntity extends BlockEntity {
             OreType t = oreTypeOf(world, bee.getFlowerPos());
             if (t == null) continue;
             counted++;
-            double chance = c.combChancePerBee * (t == OreType.DIAMOND ? c.diamondChanceMultiplier : 1.0);
+            double chance = c.combChancePerBee * (t.precious ? c.preciousChanceMultiplier : 1.0);
             if (world.random.nextDouble() < chance) combs.merge(t, 1, Integer::sum);
         }
         updateState(world, pos);

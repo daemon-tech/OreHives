@@ -19,8 +19,8 @@ public class OreHivesConfig {
     public int beeRadius = 8;
     /** Max combs stored in a hive. */
     public int maxStoredCombs = 8;
-    /** Extra multiplier for diamond combs (rarer). */
-    public double diamondChanceMultiplier = 0.2;
+    /** Comb chance multiplier for precious ores (diamond, emerald) so they stay rare. */
+    public double preciousChanceMultiplier = 0.2;
     /** Allow generic flowers (#orehives:ore_flowers) next to/on ore blocks to work (fallback without OrePlants). */
     public boolean allowFlowerOnOreFallback = true;
     /** Centrifuge processing time in ticks. */
