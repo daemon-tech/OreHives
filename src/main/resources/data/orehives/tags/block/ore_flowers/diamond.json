@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "oreplant:diamond_crop_block",
+      "required": false
+    }
+  ]
+}

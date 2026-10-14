@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "running=false": {
+      "model": "orehives:block/centrifuge"
+    },
+    "running=true": {
+      "model": "orehives:block/centrifuge_on"
+    }
+  }
+}

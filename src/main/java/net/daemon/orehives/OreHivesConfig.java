@@ -1,0 +1,44 @@
+package net.daemon.orehives;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import net.fabricmc.loader.api.FabricLoader;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+/** Simple JSON config at config/orehives.json. */
+public class OreHivesConfig {
+    /** Ticks between production checks (1200 = 1 min). */
+    public int checkIntervalTicks = 1200;
+    /** Chance per qualifying bee per check to add a comb. */
+    public double combChancePerBee = 0.25;
+    /** Max bees counted per hive per check. */
+    public int maxBeesCounted = 3;
+    /** Search radius for bees around the hive. */
+    public int beeRadius = 8;
+    /** Max combs stored in a hive. */
+    public int maxStoredCombs = 8;
+    /** Extra multiplier for diamond combs (rarer). */
+    public double diamondChanceMultiplier = 0.2;
+    /** Allow generic flowers (#orehives:ore_flowers) next to/on ore blocks to work (fallback without OrePlants). */
+    public boolean allowFlowerOnOreFallback = true;
+    /** Centrifuge processing time in ticks. */
+    public int centrifugeTicks = 100;
+
+    public static OreHivesConfig INSTANCE = new OreHivesConfig();
+
+    public static void load() {
+        Path p = FabricLoader.getInstance().getConfigDir().resolve("orehives.json");
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        try {
+            if (Files.exists(p)) {
+                OreHivesConfig c = gson.fromJson(Files.readString(p), OreHivesConfig.class);
+                if (c != null) INSTANCE = c;
+            }
+            Files.writeString(p, gson.toJson(INSTANCE));
+        } catch (Exception e) {
+            OreHives.LOGGER.warn("Could not read/write orehives.json, using defaults", e);
+        }
+    }
+}

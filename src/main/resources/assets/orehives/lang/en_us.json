@@ -1,0 +1,11 @@
+{
+  "block.orehives.ore_beehive": "Ore Beehive",
+  "block.orehives.centrifuge": "Honey Centrifuge",
+  "item.orehives.ore_honey_bottle": "Ore Honey Bottle",
+  "itemGroup.orehives.main": "Ore Hives",
+  "message.orehives.hive_status": "Combs: %s %s",
+  "item.orehives.iron_comb": "Iron Comb",
+  "item.orehives.copper_comb": "Copper Comb",
+  "item.orehives.gold_comb": "Gold Comb",
+  "item.orehives.diamond_comb": "Diamond Comb"
+}

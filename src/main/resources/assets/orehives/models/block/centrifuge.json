@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "orehives:block/centrifuge_top",
+    "side": "orehives:block/centrifuge_side"
+  }
+}

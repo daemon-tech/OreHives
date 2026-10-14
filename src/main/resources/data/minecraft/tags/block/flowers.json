@@ -1,0 +1,17 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "oreplant:iron_crop_block",
+      "required": false
+    },
+    {
+      "id": "oreplant:gold_crop_block",
+      "required": false
+    },
+    {
+      "id": "oreplant:diamond_crop_block",
+      "required": false
+    }
+  ]
+}

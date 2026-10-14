@@ -1,0 +1,11 @@
+{
+  "block.orehives.ore_beehive": "Erz-Bienenstock",
+  "block.orehives.centrifuge": "Honigschleuder",
+  "item.orehives.ore_honey_bottle": "Erzhonigflasche",
+  "itemGroup.orehives.main": "Ore Hives",
+  "message.orehives.hive_status": "Waben: %s %s",
+  "item.orehives.iron_comb": "Eisenwabe",
+  "item.orehives.copper_comb": "Kupferwabe",
+  "item.orehives.gold_comb": "Goldwabe",
+  "item.orehives.diamond_comb": "Diamantwabe"
+}

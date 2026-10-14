@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "orehives",
+  "version": "${version}",
+  "name": "Ore Hives",
+  "description": "Bees pollinating ore flowers (OrePlants crops or flowers on ore) fill Ore Beehives with ore combs; spin them in a Honey Centrifuge.",
+  "authors": [
+    "0xDaemon"
+  ],
+  "license": "TBD",
+  "icon": "assets/orehives/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "net.daemon.orehives.OreHives"
+    ],
+    "fabric-gametest": [
+      "net.daemon.orehives.test.OreHivesGameTest"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "minecraft": "~1.21.1",
+    "java": ">=21",
+    "fabric-api": "*"
+  },
+  "suggests": {
+    "oreplant": "*"
+  }
+}

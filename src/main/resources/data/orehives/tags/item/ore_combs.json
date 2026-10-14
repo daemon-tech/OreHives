@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "orehives:iron_comb",
+    "orehives:copper_comb",
+    "orehives:gold_comb",
+    "orehives:diamond_comb"
+  ]
+}
