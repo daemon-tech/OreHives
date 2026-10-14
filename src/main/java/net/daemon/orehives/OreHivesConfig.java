@@ -11,9 +11,14 @@ import java.nio.file.Path;
 public class OreHivesConfig {
     /** Ticks between production checks (1200 = 1 min). */
     public int checkIntervalTicks = 1200;
+    /**
+     * Ticks between bee scans. Natural bees spend long stretches inside their vanilla hive
+     * (not in the world), so we sample often and remember every bee seen during the cycle.
+     */
+    public int beeSampleIntervalTicks = 100;
     /** Chance per qualifying bee per check to add a comb. */
     public double combChancePerBee = 0.25;
-    /** Max bees counted per hive per check. */
+    /** Max distinct bees counted per hive per production cycle. */
     public int maxBeesCounted = 3;
     /** Search radius for bees around the hive. */
     public int beeRadius = 8;

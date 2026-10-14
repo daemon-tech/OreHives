@@ -19,8 +19,10 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class OreBeehiveBlockEntity extends BlockEntity {
     /** Generic fallback flowers: work when planted on/next to an ore block. */
@@ -28,33 +30,49 @@ public class OreBeehiveBlockEntity extends BlockEntity {
 
     private final Map<OreType, Integer> combs = new EnumMap<>(OreType.class);
     private int timer;
+    /** Bees seen near this hive during the current cycle (transient, not saved). */
+    private final Map<UUID, OreType> seenBees = new HashMap<>();
 
     public OreBeehiveBlockEntity(BlockPos pos, BlockState state) { super(OreHives.ORE_BEEHIVE_BE, pos, state); }
 
     public static void serverTick(World world, BlockPos pos, BlockState state, OreBeehiveBlockEntity be) {
         OreHivesConfig c = OreHivesConfig.INSTANCE;
-        if (++be.timer < c.checkIntervalTicks) return;
+        be.timer++;
+        if (be.timer % Math.max(1, c.beeSampleIntervalTicks) == 0) be.sampleBees(world, pos);
+        if (be.timer < c.checkIntervalTicks) return;
         be.timer = 0;
         be.produce(world, pos);
     }
 
-    /** One production check; public for gametests. */
+    /**
+     * Remember bees near the hive whose current flower is an ore flower.
+     * A bee keeps its flower pos while out and gets it back from its vanilla hive on release,
+     * so sampling several times per cycle catches bees that a single snapshot would miss.
+     */
+    public void sampleBees(World world, BlockPos pos) {
+        OreHivesConfig c = OreHivesConfig.INSTANCE;
+        for (BeeEntity bee : world.getEntitiesByClass(BeeEntity.class, new Box(pos).expand(c.beeRadius),
+                b -> b.getFlowerPos() != null)) {
+            OreType t = oreTypeOf(world, bee.getFlowerPos());
+            if (t != null) seenBees.put(bee.getUuid(), t);
+        }
+    }
+
+    /** One production cycle over the bees seen since the last cycle; public for gametests. */
     public void produce(World world, BlockPos pos) {
         OreHivesConfig c = OreHivesConfig.INSTANCE;
-        if (totalCombs() >= c.maxStoredCombs) return;
-        List<BeeEntity> bees = world.getEntitiesByClass(BeeEntity.class, new Box(pos).expand(c.beeRadius),
-                b -> b.getFlowerPos() != null);
         int counted = 0;
-        for (BeeEntity bee : bees) {
-            if (counted >= c.maxBeesCounted || totalCombs() >= c.maxStoredCombs) break;
-            OreType t = oreTypeOf(world, bee.getFlowerPos());
-            if (t == null) continue;
-            counted++;
+        for (OreType t : seenBees.values()) {
+            if (counted++ >= c.maxBeesCounted || totalCombs() >= c.maxStoredCombs) break;
             double chance = c.combChancePerBee * (t.precious ? c.preciousChanceMultiplier : 1.0);
             if (world.random.nextDouble() < chance) combs.merge(t, 1, Integer::sum);
         }
+        seenBees.clear();
         updateState(world, pos);
     }
+
+    /** Number of distinct qualifying bees seen this cycle (for tests/debug). */
+    public int seenBeeCount() { return seenBees.size(); }
 
     /**
      * Resolve the ore "pollen" type of a flower.

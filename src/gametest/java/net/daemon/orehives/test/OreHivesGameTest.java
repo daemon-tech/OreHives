@@ -8,6 +8,8 @@ import net.daemon.orehives.block.OreBeehiveBlockEntity;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.HopperBlock;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.passive.BeeEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.test.GameTest;
@@ -89,5 +91,29 @@ public class OreHivesGameTest implements FabricGameTest {
             ctx.assertTrue(got, "bottom hopper should contain iron nuggets");
             ctx.complete();
         });
+    }
+
+    /** A bee whose flower is an ore flower is sampled once (deduplicated) and yields combs. */
+    @GameTest(templateName = EMPTY_STRUCTURE)
+    public void beeIsSampledAndCounted(TestContext ctx) {
+        BlockPos ore = new BlockPos(1, 1, 1), hive = new BlockPos(4, 2, 4);
+        ctx.setBlockState(ore, Blocks.GOLD_ORE);
+        ctx.setBlockState(ore.up(), Blocks.GRASS_BLOCK);
+        ctx.setBlockState(ore.up(2), Blocks.POPPY);
+        ctx.setBlockState(hive, OreHives.ORE_BEEHIVE);
+        BeeEntity bee = ctx.spawnEntity(EntityType.BEE, new BlockPos(3, 3, 3));
+        bee.setAiDisabled(true);
+        bee.setFlowerPos(ctx.getAbsolutePos(ore.up(2)));
+        OreBeehiveBlockEntity be = (OreBeehiveBlockEntity) ctx.getBlockEntity(hive);
+        be.sampleBees(ctx.getWorld(), ctx.getAbsolutePos(hive));
+        be.sampleBees(ctx.getWorld(), ctx.getAbsolutePos(hive));
+        ctx.assertTrue(be.seenBeeCount() == 1, "same bee must be counted once, got " + be.seenBeeCount());
+        double old = OreHivesConfig.INSTANCE.combChancePerBee;
+        OreHivesConfig.INSTANCE.combChancePerBee = 1.0;
+        try { be.produce(ctx.getWorld(), ctx.getAbsolutePos(hive)); }
+        finally { OreHivesConfig.INSTANCE.combChancePerBee = old; }
+        ctx.assertTrue(be.count(OreType.GOLD) == 1, "expected 1 gold comb, got " + be.describe());
+        ctx.assertTrue(be.seenBeeCount() == 0, "cycle resets seen bees");
+        ctx.complete();
     }
 }
