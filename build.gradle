@@ -22,6 +22,8 @@ loom {
 		"orehives-gametest" { sourceSet sourceSets.gametest }
 	}
 	runs {
+		// Reduced heap for the shared box (software rendering).
+		client { vmArg "-Xmx2G" }
 		gametest {
 			server()
 			source sourceSets.gametest
