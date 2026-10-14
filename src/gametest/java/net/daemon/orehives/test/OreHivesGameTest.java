@@ -18,25 +18,43 @@ import net.minecraft.util.math.Direction;
 import java.util.List;
 
 public class OreHivesGameTest implements FabricGameTest {
-    /** Fallback path: generic flower on an ore block counts as that ore. */
+    /**
+     * Survival-friendly fallback: flower on grass/dirt counts when ore is buried
+     * 1–2 blocks under it; adjacent ore also counts; plain dirt does not.
+     */
     @GameTest(templateName = EMPTY_STRUCTURE)
     public void flowerOnOreResolvesType(TestContext ctx) {
-        BlockPos ore = new BlockPos(1, 1, 1);
-        ctx.setBlockState(ore, Blocks.IRON_ORE);
-        ctx.setBlockState(ore.up(), Blocks.POPPY);
-        OreType t = OreBeehiveBlockEntity.oreTypeOf(ctx.getWorld(), ctx.getAbsolutePos(ore.up()));
-        ctx.assertTrue(t == OreType.IRON, "expected IRON, got " + t);
-        // Ore next to (not under) the flower's ground block also counts.
-        BlockPos ground = new BlockPos(3, 1, 1);
+        // Flower on grass, iron ore directly under the grass (depth 1).
+        BlockPos a = new BlockPos(1, 1, 1);
+        ctx.setBlockState(a, Blocks.IRON_ORE);
+        ctx.setBlockState(a.up(), Blocks.GRASS_BLOCK);
+        ctx.setBlockState(a.up(2), Blocks.POPPY);
+        OreType t = OreBeehiveBlockEntity.oreTypeOf(ctx.getWorld(), ctx.getAbsolutePos(a.up(2)));
+        ctx.assertTrue(t == OreType.IRON, "depth-1 under grass: expected IRON, got " + t);
+
+        // Flower on grass, iron ore two blocks under (depth 2).
+        BlockPos b = new BlockPos(3, 1, 1);
+        ctx.setBlockState(b, Blocks.IRON_ORE);
+        ctx.setBlockState(b.up(), Blocks.DIRT);
+        ctx.setBlockState(b.up(2), Blocks.GRASS_BLOCK);
+        ctx.setBlockState(b.up(3), Blocks.POPPY);
+        t = OreBeehiveBlockEntity.oreTypeOf(ctx.getWorld(), ctx.getAbsolutePos(b.up(3)));
+        ctx.assertTrue(t == OreType.IRON, "depth-2 under grass: expected IRON, got " + t);
+
+        // Ore next to the ground block (existing adjacent check).
+        BlockPos ground = new BlockPos(5, 1, 1);
         ctx.setBlockState(ground.east(), Blocks.LAPIS_ORE);
         ctx.setBlockState(ground, Blocks.DIRT);
         ctx.setBlockState(ground.up(), Blocks.POPPY);
         t = OreBeehiveBlockEntity.oreTypeOf(ctx.getWorld(), ctx.getAbsolutePos(ground.up()));
-        ctx.assertTrue(t == OreType.LAPIS, "expected LAPIS, got " + t);
+        ctx.assertTrue(t == OreType.LAPIS, "adjacent: expected LAPIS, got " + t);
+
+        // Flower on dirt with no ore nearby must not count.
         BlockPos plain = new BlockPos(1, 1, 4);
         ctx.setBlockState(plain, Blocks.DIRT);
         ctx.setBlockState(plain.up(), Blocks.POPPY);
-        ctx.assertTrue(OreBeehiveBlockEntity.oreTypeOf(ctx.getWorld(), ctx.getAbsolutePos(plain.up())) == null, "plain flower must not count");
+        ctx.assertTrue(OreBeehiveBlockEntity.oreTypeOf(ctx.getWorld(), ctx.getAbsolutePos(plain.up())) == null,
+                "plain flower on dirt must not count");
         ctx.complete();
     }
 

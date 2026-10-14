@@ -7,7 +7,7 @@ Shear the hive to collect combs, then spin them in a **Honey Centrifuge**.
 
 ## Ore flowers
 - `#orehives:ore_flowers/<ore>`: blocks that directly count as that ore. OrePlants crops are listed as optional entries, so OrePlants is a soft dependency.
-- Fallback (works without OrePlants): any `#orehives:ore_flowers` block (default `#minecraft:flowers`) on or next to a `#c:ores/<ore>` block.
+- Fallback (works without OrePlants): any `#orehives:ore_flowers` block (default `#minecraft:flowers`) with `#c:ores/<ore>` in/under the ground block (up to `oreSearchDepth` further down, default 2), or adjacent to it. Lets flowers sit on dirt/grass in Survival.
 - Ores: iron, copper, gold, diamond, emerald, redstone, lapis.
 
 ## Centrifuge
@@ -27,7 +27,7 @@ Shear the hive to collect combs, then spin them in a **Honey Centrifuge**.
 - Brewing: Awkward + Ore Honey -> Haste (3:00); add Redstone for 8:00, Glowstone for Haste II (1:30).
 
 ## Config
-`config/orehives.json`: `checkIntervalTicks`, `combChancePerBee`, `maxBeesCounted`, `beeRadius`, `maxStoredCombs`, `preciousChanceMultiplier` (diamond/emerald), `allowFlowerOnOreFallback`, `centrifugeTicks`.
+`config/orehives.json`: `checkIntervalTicks`, `combChancePerBee`, `maxBeesCounted`, `beeRadius`, `maxStoredCombs`, `preciousChanceMultiplier` (diamond/emerald), `allowFlowerOnOreFallback`, `oreSearchDepth` (default 2), `centrifugeTicks`.
 
 ## Development
 - `python3 tools/gen_assets.py`: regenerates all JSON files and the pixel textures (drawn by code, no AI images).

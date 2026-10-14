@@ -56,16 +56,26 @@ public class OreBeehiveBlockEntity extends BlockEntity {
         updateState(world, pos);
     }
 
-    /** Resolve the ore "pollen" type of a flower. Tag driven; OrePlants entries are optional tag entries. */
+    /**
+     * Resolve the ore "pollen" type of a flower.
+     * 1) Direct tag match (#orehives:ore_flowers/&lt;ore&gt;) — OrePlants crops live here as optional entries.
+     * 2) Fallback: flower in #orehives:ore_flowers, with ore up to {@link OreHivesConfig#oreSearchDepth}
+     *    blocks beneath the ground (through dirt/grass/farmland), or adjacent horizontally.
+     */
     public static OreType oreTypeOf(World world, BlockPos flower) {
         BlockState fs = world.getBlockState(flower);
         for (OreType t : OreType.values()) if (fs.isIn(t.flowerTag)) return t;
         if (!OreHivesConfig.INSTANCE.allowFlowerOnOreFallback || !fs.isIn(ORE_FLOWERS)) return null;
-        BlockPos below = flower.down();
+        int depth = Math.max(0, OreHivesConfig.INSTANCE.oreSearchDepth);
+        BlockPos ground = flower.down();
         for (OreType t : OreType.values()) {
-            if (world.getBlockState(below).isIn(t.oreTag)) return t;
-            for (Direction d : Direction.Type.HORIZONTAL)
-                if (world.getBlockState(below.offset(d)).isIn(t.oreTag)) return t;
+            // Ground block + up to oreSearchDepth further down (Survival: flower on dirt/grass).
+            for (int d = 0; d <= depth; d++) {
+                if (world.getBlockState(ground.down(d)).isIn(t.oreTag)) return t;
+            }
+            // Ore next to the ground block the flower sits on.
+            for (Direction dir : Direction.Type.HORIZONTAL)
+                if (world.getBlockState(ground.offset(dir)).isIn(t.oreTag)) return t;
         }
         return null;
     }

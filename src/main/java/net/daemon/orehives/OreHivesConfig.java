@@ -21,8 +21,15 @@ public class OreHivesConfig {
     public int maxStoredCombs = 8;
     /** Comb chance multiplier for precious ores (diamond, emerald) so they stay rare. */
     public double preciousChanceMultiplier = 0.2;
-    /** Allow generic flowers (#orehives:ore_flowers) next to/on ore blocks to work (fallback without OrePlants). */
+    /** Allow generic flowers (#orehives:ore_flowers) next to/under ore blocks to work (fallback without OrePlants). */
     public boolean allowFlowerOnOreFallback = true;
+    /**
+     * How many blocks beneath the flower's ground block to search for #c:ores/&lt;ore&gt;.
+     * The ground block itself is always checked, then this many further down
+     * (through dirt/grass/farmland). Default 2 covers flower-on-grass with ore
+     * under the grass, or under grass+dirt — Survival flowers cannot sit on ore.
+     */
+    public int oreSearchDepth = 2;
     /** Centrifuge processing time in ticks. */
     public int centrifugeTicks = 100;
 
