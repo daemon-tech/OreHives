@@ -33,7 +33,7 @@ Every `beeSampleIntervalTicks` the hive remembers bees within `beeRadius` whose 
 `config/orehives.json`: `checkIntervalTicks`, `combChancePerBee`, `maxBeesCounted`, `beeRadius`, `maxStoredCombs`, `preciousChanceMultiplier` (diamond/emerald), `allowFlowerOnOreFallback`, `beeSampleIntervalTicks` (default 100), `oreSearchDepth` (default 2), `centrifugeTicks`.
 
 ## Development
-- `python3 tools/gen_assets.py`: regenerates all JSON files and the pixel textures (drawn by code, no AI images).
+- `python3 tools/gen_assets.py`: regenerates all JSON files and the pixel textures (pixel art drawn in code).
 - `./gradlew build`: builds the release jar (the gametests are kept out of it).
 - `./gradlew runGametest`: runs the headless gametests (source set `src/gametest`).
 - `./gradlew runClient`: starts a dev client.

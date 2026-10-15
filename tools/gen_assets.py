@@ -1,4 +1,4 @@
-"""Generates all JSON resources and hand-coded pixel textures (no AI images). Run: python3 tools/gen_assets.py"""
+"""Generates all JSON resources and hand-coded pixel textures. Run: python3 tools/gen_assets.py"""
 import json, os, random
 from PIL import Image
 R = "src/main/resources"; NS = "orehives"
